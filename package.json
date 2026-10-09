@@ -1,0 +1,14 @@
+{
+  "name": "mcd-optimize-skill",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=20"},
+  "scripts": {
+    "test": "node --test tests",
+    "demo": "node scripts/optimize.mjs --input tests/fixtures/request.mock.json --mock-pricing",
+    "package": "node scripts/package.mjs",
+    "verify-package": "node scripts/package.mjs --verify",
+    "validate-skill": "node scripts/validate-skill.mjs"
+  }
+}

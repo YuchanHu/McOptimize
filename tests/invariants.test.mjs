@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {optimize,verificationKey} from '../scripts/optimizer.mjs';
+import {applyPricing,verifyCandidates,mockPricingAdapter} from '../scripts/pricing.mjs';
+import {validateInput} from '../scripts/constraints.mjs';
+import {small,fixture} from './helpers.mjs';
+test('tiny exhaustive search agrees with independent multiset enumeration',()=>{const x=small();x.request.maxItems=3;x.request.budgetFen=4000;const r=optimize(x);assert.equal(r.meta.searchExhaustive,true);const expected=[];for(let a=1;a<=3;a++)for(let b=1;b<=3;b++)if(a+b<=3 && a*1400+b*600<=4000)expected.push(a*1400+b*600);assert.equal(r.meta.evaluated,expected.length);assert.equal(Math.min(...r.candidates.map(c=>c.estimatedTotalFen)),Math.min(...expected));});
+test('bounded allocation total halts instead of exploring exponentially',()=>{const x=fixture();x.search.maxAllocationTotalNodes=10;const r=optimize(x);assert.equal(r.meta.searchExhaustive,false);assert.ok(r.meta.allocationNodes<=11);});
+test('unknown context properties stripped before producing pricing requests',()=>{const x=fixture();x.context.Token='private';x.context.address='private';const normalized=validateInput(x);assert.equal(normalized.context.Token,undefined);assert.equal(normalized.context.address,undefined);});
+test('price binding includes store, fulfillment, quantity and coupon strategy',()=>{const r=optimize(small()),c=r.candidates[0],key=verificationKey(c,r.input.context);assert.notEqual(key,verificationKey(c,{...r.input.context,fulfillmentRef:'addr'}));assert.notEqual(key,verificationKey(c,r.input.context,['coupon']));assert.notEqual(key,verificationKey({...c,fingerprint:'changed'},r.input.context));});
+test('bundle configuration changes cannot reuse a previously bound price',()=>{const x=fixture();x.products=[x.products.at(-1)];x.request.maxItems=1;const first=optimize(x).candidates[0].fingerprint;x.products[0].components[2].quantity=2;const second=optimize(x).candidates[0].fingerprint;assert.notEqual(first,second);});
+test('partial successes produce only verified recommendations and preserve unverified count',async()=>{const r=optimize(fixture());let n=0;const mock=mockPricingAdapter(r.input),v=await verifyCandidates(r.input,r.candidates,async req=>{if(n++%2)throw {status:408};return mock(req);}),p=applyPricing(r.input,r.candidates,v.results);assert.ok(p.failed);assert.ok(p.candidates.length);assert.ok(p.candidates.every(c=>c.verifiedTotalFen!=null));assert.equal(p.unverified,r.candidates.length-p.candidates.length);});

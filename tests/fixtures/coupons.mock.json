@@ -1,0 +1,17 @@
+{
+  "dataSource": "mock",
+  "coupons": [
+    {
+      "id": "MOCK_COUPON",
+      "eligible": true,
+      "storeCodes": [
+        "MOCK_STORE_001"
+      ],
+      "beTypes": [
+        1
+      ],
+      "minSpendFen": 2000,
+      "description": "虚构优惠策略；金额只能由模拟计价器验证"
+    }
+  ]
+}

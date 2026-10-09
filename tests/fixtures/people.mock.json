@@ -1,0 +1,28 @@
+{
+  "dataSource": "mock",
+  "people": [
+    {
+      "id": "A",
+      "mustHaveCategories": [
+        "main"
+      ],
+      "excludeTags": [
+        "beef"
+      ]
+    },
+    {
+      "id": "B",
+      "mustHaveCategories": [
+        "main",
+        "fries"
+      ]
+    },
+    {
+      "id": "C",
+      "mustHaveCategories": [
+        "main"
+      ],
+      "maxEnergyKcal": 600
+    }
+  ]
+}

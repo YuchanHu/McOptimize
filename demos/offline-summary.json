@@ -1,0 +1,765 @@
+{
+  "notice": "All data fictional; mock pricing is not official verification",
+  "summaries": [
+    {
+      "scenario": "result",
+      "dataSource": "mock",
+      "status": "ok",
+      "priceVerification": "not_verified",
+      "verificationSource": null,
+      "meta": {
+        "generated": 389,
+        "pruned": 357,
+        "evaluated": 32,
+        "priceSucceeded": 0,
+        "unverified": 6,
+        "nodes": 389,
+        "allocationNodes": 641,
+        "allocationTruncated": 0,
+        "servingTruncated": false,
+        "menuTruncated": false,
+        "beamTruncated": false,
+        "searchExhaustive": true,
+        "productCount": 8,
+        "elapsedMs": 23
+      },
+      "plans": [
+        {
+          "goal": "lowest_cost",
+          "items": [
+            {
+              "productCode": "MOCK_LIGHT",
+              "quantity": 1
+            },
+            {
+              "productCode": "MOCK_UNKNOWN",
+              "quantity": 1
+            }
+          ],
+          "estimatedTotalFen": 1900,
+          "verifiedTotalFen": null,
+          "couponUse": [],
+          "nutrition": {
+            "verified": false,
+            "totalKcal": null,
+            "proteinG": null
+          },
+          "allocation": [
+            {
+              "personId": "p1",
+              "productCodes": [
+                "MOCK_UNKNOWN",
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_UNKNOWN",
+                  "purchaseCode": "MOCK_UNKNOWN"
+                },
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": false,
+                "totalKcal": null,
+                "proteinG": null
+              }
+            }
+          ],
+          "reasons": [
+            "已搜索候选中金额最低",
+            "满足 1 人硬约束；套餐子项只分配一次",
+            "菜单估价，待官方计价"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "NOT_PRICE_VERIFIED"
+          ]
+        },
+        {
+          "goal": "most_variety",
+          "items": [
+            {
+              "productCode": "MOCK_BUNDLE",
+              "quantity": 1,
+              "configurationKey": "288cbf75604792aef6bf960aab256448adccb0675c1dd4b5ef42682d6855f314"
+            },
+            {
+              "productCode": "MOCK_SALAD",
+              "quantity": 1
+            }
+          ],
+          "estimatedTotalFen": 2900,
+          "verifiedTotalFen": null,
+          "couponUse": [],
+          "nutrition": {
+            "verified": true,
+            "totalKcal": 660,
+            "proteinG": 25
+          },
+          "allocation": [
+            {
+              "personId": "p1",
+              "productCodes": [
+                "MOCK_LIGHT",
+                "MOCK_FRIES",
+                "MOCK_DRINK",
+                "MOCK_SALAD"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "0:1:0",
+                  "productCode": "MOCK_FRIES",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "0:2:0",
+                  "productCode": "MOCK_DRINK",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_SALAD",
+                  "purchaseCode": "MOCK_SALAD"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 660,
+                "proteinG": 25
+              }
+            }
+          ],
+          "reasons": [
+            "优先可靠类别覆盖、不同餐品和口味偏好",
+            "满足 1 人硬约束；套餐子项只分配一次",
+            "菜单估价，待官方计价"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "NOT_PRICE_VERIFIED"
+          ]
+        },
+        {
+          "goal": "nutrition_priority",
+          "items": [
+            {
+              "productCode": "MOCK_LIGHT",
+              "quantity": 1
+            },
+            {
+              "productCode": "MOCK_SALAD",
+              "quantity": 1
+            }
+          ],
+          "estimatedTotalFen": 2000,
+          "verifiedTotalFen": null,
+          "couponUse": [],
+          "nutrition": {
+            "verified": true,
+            "totalKcal": 340,
+            "proteinG": 22
+          },
+          "allocation": [
+            {
+              "personId": "p1",
+              "productCodes": [
+                "MOCK_SALAD",
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_SALAD",
+                  "purchaseCode": "MOCK_SALAD"
+                },
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 340,
+                "proteinG": 22
+              }
+            }
+          ],
+          "reasons": [
+            "在可信营养数据内优先较低热量",
+            "满足 1 人硬约束；套餐子项只分配一次",
+            "菜单估价，待官方计价"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "NOT_PRICE_VERIFIED"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "mock-priced",
+      "dataSource": "mock",
+      "status": "ok",
+      "priceVerification": "verified",
+      "verificationSource": "mock_adapter",
+      "meta": {
+        "generated": 389,
+        "pruned": 357,
+        "evaluated": 32,
+        "priceSucceeded": 6,
+        "unverified": 0,
+        "nodes": 389,
+        "allocationNodes": 641,
+        "allocationTruncated": 0,
+        "servingTruncated": false,
+        "menuTruncated": false,
+        "beamTruncated": false,
+        "searchExhaustive": true,
+        "productCount": 8,
+        "elapsedMs": 25,
+        "pricingFailed": 0,
+        "overBudget": 0,
+        "pricingCalls": 11
+      },
+      "plans": [
+        {
+          "goal": "lowest_cost",
+          "items": [
+            {
+              "productCode": "MOCK_LIGHT",
+              "quantity": 1
+            },
+            {
+              "productCode": "MOCK_SALAD",
+              "quantity": 1
+            }
+          ],
+          "estimatedTotalFen": 2000,
+          "verifiedTotalFen": 1800,
+          "couponUse": [
+            "MOCK_COUPON"
+          ],
+          "nutrition": {
+            "verified": true,
+            "totalKcal": 340,
+            "proteinG": 22
+          },
+          "allocation": [
+            {
+              "personId": "p1",
+              "productCodes": [
+                "MOCK_SALAD",
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_SALAD",
+                  "purchaseCode": "MOCK_SALAD"
+                },
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 340,
+                "proteinG": 22
+              }
+            }
+          ],
+          "reasons": [
+            "已搜索候选中金额最低",
+            "满足 1 人硬约束；套餐子项只分配一次",
+            "计价结果已回填，含额外费用"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "MOCK_PRICING_NOT_OFFICIAL"
+          ]
+        },
+        {
+          "goal": "most_variety",
+          "items": [
+            {
+              "productCode": "MOCK_BUNDLE",
+              "quantity": 1,
+              "configurationKey": "288cbf75604792aef6bf960aab256448adccb0675c1dd4b5ef42682d6855f314"
+            },
+            {
+              "productCode": "MOCK_SALAD",
+              "quantity": 1
+            }
+          ],
+          "estimatedTotalFen": 2900,
+          "verifiedTotalFen": 2700,
+          "couponUse": [
+            "MOCK_COUPON"
+          ],
+          "nutrition": {
+            "verified": true,
+            "totalKcal": 660,
+            "proteinG": 25
+          },
+          "allocation": [
+            {
+              "personId": "p1",
+              "productCodes": [
+                "MOCK_LIGHT",
+                "MOCK_FRIES",
+                "MOCK_DRINK",
+                "MOCK_SALAD"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "0:1:0",
+                  "productCode": "MOCK_FRIES",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "0:2:0",
+                  "productCode": "MOCK_DRINK",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_SALAD",
+                  "purchaseCode": "MOCK_SALAD"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 660,
+                "proteinG": 25
+              }
+            }
+          ],
+          "reasons": [
+            "优先可靠类别覆盖、不同餐品和口味偏好",
+            "满足 1 人硬约束；套餐子项只分配一次",
+            "计价结果已回填，含额外费用"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "MOCK_PRICING_NOT_OFFICIAL"
+          ]
+        },
+        {
+          "goal": "nutrition_priority",
+          "items": [
+            {
+              "productCode": "MOCK_FRIES",
+              "quantity": 1
+            },
+            {
+              "productCode": "MOCK_LIGHT",
+              "quantity": 1
+            }
+          ],
+          "estimatedTotalFen": 2300,
+          "verifiedTotalFen": 2100,
+          "couponUse": [
+            "MOCK_COUPON"
+          ],
+          "nutrition": {
+            "verified": true,
+            "totalKcal": 480,
+            "proteinG": 23
+          },
+          "allocation": [
+            {
+              "personId": "p1",
+              "productCodes": [
+                "MOCK_FRIES",
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_FRIES",
+                  "purchaseCode": "MOCK_FRIES"
+                },
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 480,
+                "proteinG": 23
+              }
+            }
+          ],
+          "reasons": [
+            "在可信营养数据内优先较低热量",
+            "该目标首选与已有方案重复，展示下一个不同组合",
+            "满足 1 人硬约束；套餐子项只分配一次",
+            "计价结果已回填，含额外费用"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "MOCK_PRICING_NOT_OFFICIAL"
+          ]
+        }
+      ]
+    },
+    {
+      "scenario": "group",
+      "dataSource": "mock",
+      "status": "ok",
+      "priceVerification": "verified",
+      "verificationSource": "mock_adapter",
+      "meta": {
+        "generated": 637,
+        "pruned": 556,
+        "evaluated": 81,
+        "priceSucceeded": 6,
+        "unverified": 0,
+        "nodes": 637,
+        "allocationNodes": 200000,
+        "allocationTruncated": 39,
+        "servingTruncated": false,
+        "menuTruncated": false,
+        "beamTruncated": true,
+        "searchExhaustive": false,
+        "productCount": 8,
+        "elapsedMs": 368,
+        "pricingFailed": 0,
+        "overBudget": 0,
+        "pricingCalls": 12
+      },
+      "plans": [
+        {
+          "goal": "lowest_cost",
+          "items": [
+            {
+              "productCode": "MOCK_BUNDLE",
+              "quantity": 1,
+              "configurationKey": "288cbf75604792aef6bf960aab256448adccb0675c1dd4b5ef42682d6855f314"
+            },
+            {
+              "productCode": "MOCK_LIGHT",
+              "quantity": 2
+            }
+          ],
+          "estimatedTotalFen": 5100,
+          "verifiedTotalFen": 4900,
+          "couponUse": [
+            "MOCK_COUPON"
+          ],
+          "nutrition": {
+            "verified": true,
+            "totalKcal": 1100,
+            "proteinG": 63
+          },
+          "allocation": [
+            {
+              "personId": "A",
+              "productCodes": [
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_BUNDLE"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 260,
+                "proteinG": 20
+              }
+            },
+            {
+              "personId": "B",
+              "productCodes": [
+                "MOCK_FRIES",
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:1:0",
+                  "productCode": "MOCK_FRIES",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 480,
+                "proteinG": 23
+              }
+            },
+            {
+              "personId": "C",
+              "productCodes": [
+                "MOCK_DRINK",
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:2:0",
+                  "productCode": "MOCK_DRINK",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "2:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 360,
+                "proteinG": 20
+              }
+            }
+          ],
+          "reasons": [
+            "已搜索候选中金额最低",
+            "满足 3 人硬约束；套餐子项只分配一次",
+            "计价结果已回填，含额外费用"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "MOCK_PRICING_NOT_OFFICIAL"
+          ]
+        },
+        {
+          "goal": "most_variety",
+          "items": [
+            {
+              "productCode": "MOCK_BEEF",
+              "quantity": 1
+            },
+            {
+              "productCode": "MOCK_BUNDLE",
+              "quantity": 1,
+              "configurationKey": "288cbf75604792aef6bf960aab256448adccb0675c1dd4b5ef42682d6855f314"
+            },
+            {
+              "productCode": "MOCK_CHICKEN",
+              "quantity": 1
+            },
+            {
+              "productCode": "MOCK_SALAD",
+              "quantity": 1
+            }
+          ],
+          "estimatedTotalFen": 6400,
+          "verifiedTotalFen": 6200,
+          "couponUse": [
+            "MOCK_COUPON"
+          ],
+          "nutrition": {
+            "verified": true,
+            "totalKcal": 1490,
+            "proteinG": 65
+          },
+          "allocation": [
+            {
+              "personId": "A",
+              "productCodes": [
+                "MOCK_LIGHT",
+                "MOCK_SALAD"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "3:0:0",
+                  "productCode": "MOCK_SALAD",
+                  "purchaseCode": "MOCK_SALAD"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 340,
+                "proteinG": 22
+              }
+            },
+            {
+              "personId": "B",
+              "productCodes": [
+                "MOCK_BEEF",
+                "MOCK_FRIES"
+              ],
+              "servings": [
+                {
+                  "servingId": "2:0:0",
+                  "productCode": "MOCK_BEEF",
+                  "purchaseCode": "MOCK_BEEF"
+                },
+                {
+                  "servingId": "0:1:0",
+                  "productCode": "MOCK_FRIES",
+                  "purchaseCode": "MOCK_BUNDLE"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 670,
+                "proteinG": 25
+              }
+            },
+            {
+              "personId": "C",
+              "productCodes": [
+                "MOCK_DRINK",
+                "MOCK_CHICKEN"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:2:0",
+                  "productCode": "MOCK_DRINK",
+                  "purchaseCode": "MOCK_BUNDLE"
+                },
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_CHICKEN",
+                  "purchaseCode": "MOCK_CHICKEN"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 480,
+                "proteinG": 18
+              }
+            }
+          ],
+          "reasons": [
+            "优先可靠类别覆盖、不同餐品和口味偏好",
+            "满足 3 人硬约束；套餐子项只分配一次",
+            "计价结果已回填，含额外费用"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "MOCK_PRICING_NOT_OFFICIAL"
+          ]
+        },
+        {
+          "goal": "nutrition_priority",
+          "items": [
+            {
+              "productCode": "MOCK_FRIES",
+              "quantity": 1
+            },
+            {
+              "productCode": "MOCK_LIGHT",
+              "quantity": 3
+            }
+          ],
+          "estimatedTotalFen": 5100,
+          "verifiedTotalFen": 4900,
+          "couponUse": [
+            "MOCK_COUPON"
+          ],
+          "nutrition": {
+            "verified": true,
+            "totalKcal": 1000,
+            "proteinG": 63
+          },
+          "allocation": [
+            {
+              "personId": "A",
+              "productCodes": [
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "1:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 260,
+                "proteinG": 20
+              }
+            },
+            {
+              "personId": "B",
+              "productCodes": [
+                "MOCK_FRIES",
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "0:0:0",
+                  "productCode": "MOCK_FRIES",
+                  "purchaseCode": "MOCK_FRIES"
+                },
+                {
+                  "servingId": "3:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 480,
+                "proteinG": 23
+              }
+            },
+            {
+              "personId": "C",
+              "productCodes": [
+                "MOCK_LIGHT"
+              ],
+              "servings": [
+                {
+                  "servingId": "2:0:0",
+                  "productCode": "MOCK_LIGHT",
+                  "purchaseCode": "MOCK_LIGHT"
+                }
+              ],
+              "nutrition": {
+                "verified": true,
+                "totalKcal": 260,
+                "proteinG": 20
+              }
+            }
+          ],
+          "reasons": [
+            "在可信营养数据内优先较低热量",
+            "满足 3 人硬约束；套餐子项只分配一次",
+            "计价结果已回填，含额外费用"
+          ],
+          "warnings": [
+            "MOCK_DATA",
+            "MOCK_PRICING_NOT_OFFICIAL"
+          ]
+        }
+      ]
+    }
+  ]
+}

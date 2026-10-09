@@ -1,0 +1,12 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {validateInput,canAssign,personSatisfied,servings} from '../scripts/constraints.mjs';
+import {fixture} from './helpers.mjs';
+test('T11 invalid budgets reject string, zero, negative, fractions, unsafe integers',()=>{for(const v of [0,-1,'3000',3.5,Number.MAX_SAFE_INTEGER+1,null]){const x=fixture();x.request.budgetFen=v;assert.throws(()=>validateInput(x),/INVALID_INTEGER/);}});
+test('T11 invalid quantity, price and product code fail explicitly',()=>{for(const [k,v] of [['priceFen',null],['priceFen',-1],['maxQuantity',0],['maxQuantity',1.5],['productCode','']]){const x=fixture();x.products[0][k]=v;assert.throws(()=>validateInput(x));}});
+test('duplicate products/people, unknown modes and context mismatch rejected',()=>{const x=fixture();x.products.push(x.products[0]);assert.throws(()=>validateInput(x),/DUPLICATE_PRODUCT/);const y=fixture();y.mode='real';assert.throws(()=>validateInput(y),/SOURCE_MISMATCH/);});
+test('unknown ingredient evidence cannot promise beef exclusion',()=>{const x=validateInput(fixture()),p=x.request.people[0],u=servings(x.products[0],0)[0];u.evidence={};assert.equal(canAssign(u,p,'mock'),false);u.evidence={tags:{source:'official',confidence:0.5}};assert.equal(canAssign(u,p,'real'),false);});
+test('model guessed categories cannot satisfy mandatory coverage',()=>{const x=validateInput(fixture()),u=servings(x.products[0],0)[0];u.evidence={tags:{source:'mock',confidence:1}};assert.equal(personSatisfied([u],x.request.people[0],'mock'),false);});
+test('real input rejects mock provenance; ingredient certainty does not follow name',()=>{const x=fixture();x.mode='real';x.context.dataSource='real';assert.throws(()=>validateInput(x),/MOCK_EVIDENCE_IN_REAL/);});
+test('T08 unknown nutrition cannot satisfy strict energy cap',()=>{const x=validateInput(fixture()),u=x.products.find(p=>p.productCode==='MOCK_UNKNOWN');assert.equal(canAssign(u,{excludeProducts:[],excludeTags:[],excludeCategories:[],maxEnergyKcal:600},'mock'),false);});
+test('invalid bundle configurations and impossible business mode rejected',()=>{const x=fixture();x.products.at(-1).configurationVerified=false;assert.throws(()=>validateInput(x),/INVALID_BUNDLE/);const y=fixture();y.context.orderType=2;assert.throws(()=>validateInput(y),/INVALID_CONTEXT/);});

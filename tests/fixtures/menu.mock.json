@@ -1,0 +1,366 @@
+{
+  "dataSource": "mock",
+  "notice": "虚构菜单与营养，非官方数据",
+  "products": [
+    {
+      "productCode": "MOCK_CHICKEN",
+      "name": "模拟·鸡肉汉堡",
+      "priceFen": 1700,
+      "type": "single",
+      "categories": [
+        "chicken-burger",
+        "main"
+      ],
+      "tags": [
+        "chicken"
+      ],
+      "energyKcal": 380,
+      "proteinG": 18,
+      "nutritionVerified": true,
+      "available": true,
+      "evidence": {
+        "categories": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "tags": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "nutrition": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        }
+      }
+    },
+    {
+      "productCode": "MOCK_LIGHT",
+      "name": "模拟·轻量鸡肉堡",
+      "priceFen": 1400,
+      "type": "single",
+      "categories": [
+        "chicken-burger",
+        "main"
+      ],
+      "tags": [
+        "chicken"
+      ],
+      "energyKcal": 260,
+      "proteinG": 20,
+      "nutritionVerified": true,
+      "available": true,
+      "evidence": {
+        "categories": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "tags": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "nutrition": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        }
+      }
+    },
+    {
+      "productCode": "MOCK_BEEF",
+      "name": "模拟·牛肉汉堡",
+      "priceFen": 1800,
+      "type": "single",
+      "categories": [
+        "beef-burger",
+        "main"
+      ],
+      "tags": [
+        "beef"
+      ],
+      "energyKcal": 450,
+      "proteinG": 22,
+      "nutritionVerified": true,
+      "available": true,
+      "evidence": {
+        "categories": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "tags": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "nutrition": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        }
+      }
+    },
+    {
+      "productCode": "MOCK_FRIES",
+      "name": "模拟·小薯条",
+      "priceFen": 900,
+      "type": "single",
+      "categories": [
+        "snack",
+        "fries"
+      ],
+      "tags": [],
+      "energyKcal": 220,
+      "proteinG": 3,
+      "nutritionVerified": true,
+      "available": true,
+      "evidence": {
+        "categories": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "tags": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "nutrition": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        }
+      }
+    },
+    {
+      "productCode": "MOCK_SALAD",
+      "name": "模拟·配菜",
+      "priceFen": 600,
+      "type": "single",
+      "categories": [
+        "snack",
+        "vegetable"
+      ],
+      "tags": [],
+      "energyKcal": 80,
+      "proteinG": 2,
+      "nutritionVerified": true,
+      "available": true,
+      "evidence": {
+        "categories": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "tags": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "nutrition": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        }
+      }
+    },
+    {
+      "productCode": "MOCK_DRINK",
+      "name": "模拟·饮料",
+      "priceFen": 400,
+      "type": "single",
+      "categories": [
+        "drink"
+      ],
+      "tags": [],
+      "energyKcal": 100,
+      "proteinG": 0,
+      "nutritionVerified": true,
+      "available": true,
+      "evidence": {
+        "categories": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "tags": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "nutrition": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        }
+      }
+    },
+    {
+      "productCode": "MOCK_UNKNOWN",
+      "name": "模拟·营养未知小食",
+      "priceFen": 500,
+      "type": "single",
+      "categories": [
+        "snack"
+      ],
+      "tags": [],
+      "energyKcal": null,
+      "proteinG": null,
+      "nutritionVerified": false,
+      "available": true,
+      "evidence": {
+        "categories": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "tags": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "nutrition": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        }
+      }
+    },
+    {
+      "productCode": "MOCK_BUNDLE",
+      "name": "模拟·鸡堡小食饮料套餐",
+      "priceFen": 2300,
+      "type": "bundle",
+      "categories": [],
+      "tags": [],
+      "energyKcal": null,
+      "proteinG": null,
+      "nutritionVerified": false,
+      "available": true,
+      "evidence": {
+        "categories": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "tags": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        },
+        "nutrition": {
+          "source": "mock",
+          "confidence": 1,
+          "reference": "fictional fixture"
+        }
+      },
+      "configurationVerified": true,
+      "components": [
+        {
+          "productCode": "MOCK_LIGHT",
+          "name": "模拟·轻量鸡肉堡",
+          "priceFen": 1400,
+          "type": "single",
+          "categories": [
+            "chicken-burger",
+            "main"
+          ],
+          "tags": [
+            "chicken"
+          ],
+          "energyKcal": 260,
+          "proteinG": 20,
+          "nutritionVerified": true,
+          "available": true,
+          "evidence": {
+            "categories": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            },
+            "tags": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            },
+            "nutrition": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            }
+          },
+          "quantity": 1
+        },
+        {
+          "productCode": "MOCK_FRIES",
+          "name": "模拟·小薯条",
+          "priceFen": 900,
+          "type": "single",
+          "categories": [
+            "snack",
+            "fries"
+          ],
+          "tags": [],
+          "energyKcal": 220,
+          "proteinG": 3,
+          "nutritionVerified": true,
+          "available": true,
+          "evidence": {
+            "categories": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            },
+            "tags": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            },
+            "nutrition": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            }
+          },
+          "quantity": 1
+        },
+        {
+          "productCode": "MOCK_DRINK",
+          "name": "模拟·饮料",
+          "priceFen": 400,
+          "type": "single",
+          "categories": [
+            "drink"
+          ],
+          "tags": [],
+          "energyKcal": 100,
+          "proteinG": 0,
+          "nutritionVerified": true,
+          "available": true,
+          "evidence": {
+            "categories": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            },
+            "tags": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            },
+            "nutrition": {
+              "source": "mock",
+              "confidence": 1,
+              "reference": "fictional fixture"
+            }
+          },
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}
