@@ -1,0 +1,87 @@
+name: 发布成品 Skill
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/release.yml
+      - docs/releases/v1.0.0.md
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-v1.0.0
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 校验安装包并发布中文 Release
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea9 # v7
+        with:
+          script: |
+            const { createHash } = require('node:crypto');
+            const repo = context.repo;
+            const tag = 'v1.0.0';
+            const packages = [
+              { name: 'mcd-optimize-skill.zip', sha256: '6b503a19b8c05106b80198dc1da018cac2f362b728cb2e6359deb34e80523182' },
+              { name: 'mcd-optimize-skill-flat.zip', sha256: '5a74b79ffc7c73faa76939e5094c7147527c2c09e61727a96789bb267d8bae75' }
+            ];
+            async function readFile(path) {
+              const { data } = await github.rest.repos.getContent({ ...repo, path, ref: context.sha });
+              if (Array.isArray(data) || data.type !== 'file' || data.encoding !== 'base64') {
+                throw new Error(`无法读取发布文件：${path}`);
+              }
+              return Buffer.from(data.content, 'base64');
+            }
+            const body = (await readFile('docs/releases/v1.0.0.md')).toString('utf8');
+            for (const pkg of packages) {
+              pkg.bytes = await readFile(`dist/${pkg.name}`);
+              const actual = createHash('sha256').update(pkg.bytes).digest('hex');
+              if (actual !== pkg.sha256) throw new Error(`安装包校验失败：${pkg.name}`);
+              core.info(`${pkg.name}：SHA256 校验通过`);
+            }
+            let release;
+            try {
+              release = (await github.rest.repos.getReleaseByTag({ ...repo, tag })).data;
+            } catch (error) {
+              if (error.status !== 404) throw error;
+            }
+            if (!release) {
+              const drafts = await github.paginate(github.rest.repos.listReleases, { ...repo, per_page: 100 });
+              release = drafts.find(item => item.tag_name === tag);
+            }
+            if (!release) {
+              release = (await github.rest.repos.createRelease({
+                ...repo, tag_name: tag, target_commitish: context.sha,
+                name: 'McOptimize v1.0.0：麦当劳点餐优化 WorkBuddy 技能',
+                body, draft: true, prerelease: false
+              })).data;
+            }
+            const existingAssets = await github.paginate(github.rest.repos.listReleaseAssets, {
+              ...repo, release_id: release.id, per_page: 100
+            });
+            for (const pkg of packages) {
+              let asset = existingAssets.find(item => item.name === pkg.name);
+              if (!asset) {
+                asset = (await github.rest.repos.uploadReleaseAsset({
+                  ...repo, release_id: release.id, name: pkg.name,
+                  headers: { 'content-type': 'application/zip', 'content-length': pkg.bytes.length },
+                  data: pkg.bytes
+                })).data;
+              }
+              if (asset.size !== pkg.bytes.length || asset.state !== 'uploaded') {
+                throw new Error(`附件上传不完整：${pkg.name}`);
+              }
+              if (asset.digest !== `sha256:${pkg.sha256}`) {
+                throw new Error(`附件远端 SHA256 校验失败：${pkg.name}`);
+              }
+              core.info(`${pkg.name}：远端附件校验通过`);
+            }
+            if (release.draft) {
+              release = (await github.rest.repos.updateRelease({ ...repo, release_id: release.id, draft: false })).data;
+            }
+            await core.summary.addHeading('成品 Skill 发布完成').addLink('查看 Release', release.html_url).write();
