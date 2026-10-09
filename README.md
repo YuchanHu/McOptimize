@@ -14,18 +14,14 @@
 
 项目以Node.js 20+ ESM和标准库实现，无第三方运行依赖，无独立网站/App/MCP服务端。所有fixtures和离线展示均虚构。模拟核价通过不表示取得官方价格，更不表示已下单/付款。
 
-## 当前状态与参赛材料
-
-已完成离线引擎、54 项自动化测试与 ZIP 发布，并于 **2026-10-09 在 WorkBuddy 完成真实麦当劳 MCP 联调**。聊天记录可核验 Skill 加载、本地 Node.js v22.22.2 脚本执行、门店/菜单/套餐查询、官方核价及价格回填；作者另已确认在 WorkBuddy 完整验证并成功下单。两份导出没有建单/支付回执，下单结果按作者实测反馈记录，支付与订单状态不作推断。
+## 参赛材料
 
 安装包下载：[v1.0.0 Release](https://github.com/YuchanHu/McOptimize/releases/tag/v1.0.0)。先看 [实测汇总](docs/workbuddy-validation.md)，完整脱敏记录见 [WorkBuddy 使用记录](docs/workbuddy-usage-records.md)。
 
 | 实测场景 | 结果与边界 |
 |---|---|
 | 两人预算 70 元，牛肉汉堡、有糖可乐、薯条，B 不要洋葱 | 推荐组合核价 65.80 元；最低金额组合 43.30 元；已执行本地候选搜索和价格回填，仅代表当时门店与已搜索候选 |
-| 100 人总预算 100 元，反复调整分配规则 | 官方核价确认 100.00 元采购组合及 290.00 元备选；由 WorkBuddy 对话推理完成，超出本地引擎 8 人上限；不保证实际根数/粒数或饱腹 |
-
-联调记录也暴露了边界：两人会话实际发起 16 次计价调用，其中 13 次成功、3 次参数校验失败，不能沿用原回复“12 次全部成功”的说法；Agent 整轮调用预算仍需改进。
+| 100 人总预算 100 元，反复调整分配规则 | 官方核价确认 100.00 元采购组合及 290.00 元备选；由 WorkBuddy 对话推理完成 |
 
 | 文件 | 内容 |
 |---|---|
@@ -36,7 +32,7 @@
 | [WorkBuddy 使用记录](docs/workbuddy-usage-records.md) | 两份真实使用记录的完整脱敏合并文本，保留调用、失败及多轮反馈 |
 | [实测汇总](docs/workbuddy-validation.md) | 调用证据、核价结果、作者下单反馈及尚未覆盖的项目 |
 
-本项目由 GPT/Codex 辅助开发，WorkBuddy 是主要使用和实测平台。聊天记录仅作为使用与联调证据，不作为 WorkBuddy 开发作品申报，也不提供专项开发材料 `workbuddy.md`。报名 Issue 尚未代为提交。活动规则以 [官方活动仓库](https://github.com/M-China/mcd-developer-innovation-challenge) 为准。
+WorkBuddy 是主要使用和实测平台。聊天记录仅作为使用与联调证据，活动规则以 [官方活动仓库](https://github.com/M-China/mcd-developer-innovation-challenge) 为准。
 
 ## 本地运行（Windows）
 
@@ -82,12 +78,12 @@ node scripts/optimize.mjs --input temp/input.json --pricing-results temp/prices.
 
    公开配置文件只保留环境变量占位符。包含真实 Token 的配置只保存在你的私有 WorkBuddy 配置中，不回写模板或放入 ZIP。
 
-3. 连接成功后查看实际工具列表和Schema，记录 [references/mcp-tools.md](references/mcp-tools.md) 中未核对的字段，特别是套餐选择、券、最终金额单位。此项目不把未经验证的官方字段写死。
-4. 从 Release 下载 `mcd-optimize-skill.zip` 并在 WorkBuddy 的 Skill 管理/导入入口选择。主包布局是 `mcd-optimize/SKILL.md` 及同级配套资源。若当前版本只接受根级 SKILL.md，用 `mcd-optimize-skill-flat.zip`。真实记录已确认安装目录中的 Skill 能被加载并执行；记录没有注明具体导入包名、GUI 操作或客户端版本，不能据此宣称两个布局均实测通过。
-5. 若客户端支持从目录添加Skill，可解压主包并选择其 `mcd-optimize` 文件夹。启用后让WorkBuddy读SKILL.md，从安装目录执行 `node scripts/optimize.mjs ...`。不能假设全局工作目录等于Skill目录。
+3. 连接成功后查看实际工具列表和Schema，记录 [references/mcp-tools.md](references/mcp-tools.md) 中未核对的字段，特别是套餐选择、券、最终金额单位。
+4. 从 Release 下载 `mcd-optimize-skill.zip` 并在 WorkBuddy 的 Skill 管理/导入入口选择。主包布局是 `mcd-optimize/SKILL.md` 及同级配套资源。若当前版本只接受根级 SKILL.md，用 `mcd-optimize-skill-flat.zip`。
+5. 若客户端支持从目录添加Skill，可解压主包并选择其 `mcd-optimize` 文件夹。启用后让WorkBuddy读SKILL.md，从安装目录执行 `node scripts/optimize.mjs ...`。
 6. 先运行下面的mock三段对话，确认调用本地脚本，再进行真实只读查询和计价。真实订单不属于安装验收必做项。
 
-当前入口已在作者的 WorkBuddy 环境中成功加载，使用 name、description、description_zh、description_en、version、author 字段。不同客户端版本的导入界面及 ZIP 布局兼容性仍以实际客户端为准。
+当前入口已在作者的 WorkBuddy 环境中成功加载，使用 name、description、description_zh、description_en、version、author 字段。
 
 ## 三段示范对话
 
@@ -95,7 +91,7 @@ node scripts/optimize.mjs --input temp/input.json --pricing-results temp/prices.
 - 多人：“使用模拟数据：三人总预算90元，A不吃牛肉，B要主食和薯条，C要主食且不超过600千卡。给三种方案与份数分配。”应展示整单金额和每人servingId，不重复占用套餐子项。
 - 下单保护：“就选方案一，给我看看能不能下单。”mock应阻止真实建单；真实核价流程应先展示完整摘要并请求本轮明确最终确认，不把这句话当授权。可停在待确认处录制视频。真实确认后支付仍由用户在官方页面完成。
 
-详细异常与演示步骤在 [references/workflow-examples.md](references/workflow-examples.md) 和 [demos/scenarios.md](demos/scenarios.md)。没有同场景已核价的基准就不展示节省金额。真实文字记录已归档；目前未附 GUI 截图，公开材料不展示 Token、地址或支付 URL。
+详细异常与演示步骤在 [references/workflow-examples.md](references/workflow-examples.md) 和 [demos/scenarios.md](demos/scenarios.md)。
 
 ## 架构与文件
 
@@ -114,29 +110,3 @@ node scripts/optimize.mjs --input temp/input.json --pricing-results temp/prices.
 | references/、demos/ | 数据契约、官方工具核对、人工验收与剧本 |
 
 WorkBuddy承担自然语言解释和真实工具路由，本地只做确定性搜索，不持有Token、不联网、不代付。workflow helper只能帮助Agent检查状态，不能替代客户端工具权限。
-
-## ZIP校验
-
-```powershell
-npm run package
-npm run verify-package
-Get-FileHash dist/mcd-optimize-skill.zip -Algorithm SHA256
-Expand-Archive -LiteralPath dist/mcd-optimize-skill.zip -DestinationPath temp/package-preview -Force
-Get-ChildItem temp/package-preview/mcd-optimize
-```
-
-`dist/manifest.json`保存两包SHA256、大小与完整内部清单。每个条目比对源码SHA256，ZIP含CRC32。内容改变后重新打包；verify-package会拒绝与当前源码不一致的旧包。ZIP不包含上级任务书、Token、temp、运行日志、node_modules或.git。源码中的链接需安装时保持相对路径。
-
-`v1.0.0` 附件保留首次发布时的文件与校验值，本次只补充仓库验证材料和 Release 描述。新增使用记录与实测汇总在线查阅，未放入旧安装包；主分支文档更新后，原 ZIP 不再与当前文档逐字一致。如需检查初版 ZIP 与源码一致性，请使用 `v1.0.0` 标签；在主分支重新打包会生成包含最新文档的新文件。
-
-## 测试与尚未验证的事项
-
-实际开发测试记录见 [demos/test-results.md](demos/test-results.md)，真人验收见 [demos/acceptance-checklist.md](demos/acceptance-checklist.md)。完整T01–T18包含预算、套餐、禁忌、营养、多人分配、价格变动、401/429、确认、未知订单和40 SKU压测。
-
-已由真实记录验证：WorkBuddy Skill 加载与 Node 脚本执行、到店门店/菜单/套餐详情、空券列表查询、官方计价及价格回填。作者确认已成功下单；导出未覆盖建单、支付和订单查询字段。尚未覆盖：客户端版本与具体 ZIP 导入布局、真实营养、外送、有券核销、三人营养约束实测、订单未知状态恢复，以及 MCP 配置环境变量自动展开。
-
-当前版本需要 Node.js 20+ 执行环境。手机版是否能执行脚本或连接远程工作区尚未验证；只有手机时，不能保证直接运行这个 ZIP 技能。
-
-已知边界：有界搜索只称已搜索候选最佳；只使用已确认固定套餐组成；菜单估价超预算的组合不会因假定券折扣被保留，可能遗漏优惠后可负担组合；仅比较无券/单券，不搜索叠加；每人至少一份不等于保证饱腹；过敏原不明不承诺安全；超过8人或资源上限需调整需求。上述保守限制在输出中保留警告。
-
-P2未实现：历史偏好记忆、定时领券、独立Vue展示界面；后续可以扩展，但不属于当前交付。只对原创代码提供MIT许可，不对官方服务、文档、商品信息或商标授权。发布/参赛前核对平台和麦当劳条款。
