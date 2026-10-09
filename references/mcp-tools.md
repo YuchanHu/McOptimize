@@ -22,26 +22,26 @@
 
 客户端可能添加前缀或转连字符为下划线。通过实时工具列表映射，禁止照抄某客户端内部工具名。新增地址、取消订单、积分兑换、抽奖等不属于默认权限。
 
-## 实时Schema核对：未实测
+## 实时 Schema 核对：到店场景已实测
 
-本开发环境没有连接到麦当劳的 WorkBuddy 工具会话。任务书包含调试凭据，但未将其写入项目或通过本地脚本访问账户。没有执行菜单/券/营养/计价/订单真实调用，未取得实时JSON Schema或真实响应。这是待人工联调，不把任务书字段提示伪称实测Schema。
+2026-10-09 作者提供的 WorkBuddy 使用记录包含实际工具 Schema、请求和响应。已验证到店门店、菜单、套餐详情、空券列表、计价和本地回填；客户端工具前缀为 `mcp__mcd-mcp__`。完整脱敏记录与范围见 [实测汇总](../docs/workbuddy-validation.md)。项目由 GPT/Codex 辅助开发，WorkBuddy 是主要使用平台。
 
-WorkBuddy两个文档页通过网页读取超时，直接请求亦未成功；frontmatter必填字段与 `@references` 采用任务书约定。当前线上解析规则及ZIP顶层布局尚未证实。主包包含 `mcd-optimize/SKILL.md`，兼容包根级SKILL.md；真人导入成功后记录客户端版本、包名及布局。使用纯Node ESM、无Bash依赖，但WorkBuddy具体执行权限也须验收。
+记录已确认安装目录中的 Skill 加载、references 读取和本地 Node.js v22.22.2 执行。主包包含 `mcd-optimize/SKILL.md`，兼容包根级 SKILL.md；记录未注明客户端版本、导入包名或 GUI 过程，两个布局不能同时标为实测通过。
 
-## 联调必须填写的表（禁止猜字段）
+## 当前字段核对范围
 
-| 项目 | 任务书提示（不是已验证Schema） | 实时核对结果 |
+| 项目 | 字段 | 实时核对结果 |
 |---|---|---|
-| 门店场景 | storeCode、beCode、orderType、beType | 未核对必填性/类型/业务组合 |
-| 到店/外送 | orderType示意1/2；beType示意1/2/5/6 | 未核对当前枚举 |
-| 商品 | items、productCode、quantity | 未核对套餐选择/特制嵌套 |
-| 优惠 | couponId、couponCode等可能字段 | 未核对券位置、组合规则、作用范围 |
-| 计价金额 | 任务书提到整数示例 | 未核对字段路径和单位，禁止猜金额单位 |
-| 最终金额 | 含商品、配送等全部费用 | 未核对最终应付、费用、优惠字段 |
-| 时间 | 官方计价时间或实际完成时间 | 未核对响应时间字段 |
-| 下单 | payH5Url可能为支付字段 | 未核对订单ID、支付链接与查询入参 |
+| 门店场景 | storeCode、orderType、beType | 成功请求包含字符串 storeCode、orderType=1、beType=1；其他业务组合未覆盖 |
+| 到店/外送 | takeWayList | 计价响应包含 eat-in / take-in-store；没有外送验收 |
+| 商品 | items、productCode、quantity | 已确认到店商品参数及套餐选择/特调实例；按实时 Schema 构造，不保证其他商品可直接套用 |
+| 优惠 | query-my-coupons / query-store-coupons | 百人会话返回空券列表；有效券位置、组合规则及核销未覆盖 |
+| 计价金额 | data.price | 实际整数分；6580 对应 65.80 元、10000 对应 100.00 元 |
+| 金额组成 | data.productOriginalPrice、productPrice、originalPrice、discount、price | 已观察无折扣到店响应；配送费与有券折扣未覆盖 |
+| 时间 | datetime | 成功响应带服务时间字符串；客户端按场景和有效期重新核价 |
+| 下单 | 订单ID、支付链接、查询参数 | 作者确认成功下单，但本次导出没有实际调用和回执，字段仍未核对 |
 
-用户已确认WorkBuddy自定义MCP通过配置文件设置，顶层结构是 `{"mcpServers": {}}`。使用 [mcp-config.example.json](mcp-config.example.json) 的官方接入参数，将占位Token只替换在WorkBuddy配置中；已有其他服务时合并条目，避免覆盖。此结构说明来自用户提供的当前界面信息，不代表连接已实测成功。
+WorkBuddy 自定义 MCP 通过顶层 `{"mcpServers": {}}` 配置，真实工具调用已确认连接可用。使用 [mcp-config.example.json](mcp-config.example.json) 的官方接入参数，只在私有配置绑定 Token；已有其他服务时合并条目。当前导出未证明环境变量占位符能自动展开。
 
 步骤：在 WorkBuddy 自定义MCP中填写mcpServers JSON配置→保存并启用服务→查看实际工具 Schema→选择真实门店/方式→保存脱敏核对记录→确认金额单位→编写 temp/ 的显式字段mapping→只读查询菜单、详情、券、营养→本地搜索→有限核价→回填→按真人清单验收。未知关键字段则停止该分支，不伪造默认值。
 
@@ -54,6 +54,6 @@ WorkBuddy两个文档页通过网页读取超时，直接请求亦未成功；fr
 ## 差异登记
 
 - 麦当劳公开接入/工具名称：未发现与任务书冲突。
-- 实时Schema：未获取，适配采用显式路径与已核对标志，未硬编码假想官方嵌套结构。
-- WorkBuddy线上文档及ZIP导入：未读取成功/未做GUI验证，提供两种布局和可复现校验。
+- 实时 Schema：已保留到店调用记录；两人会话 16 次计价中 3 次因参数 Schema 不匹配失败，成功后回填 12 条候选价格。不能将文档中的默认 12 次预算当作整轮已遵守的事实。
+- WorkBuddy：Skill 加载、资料读取和 Node 执行已验证；GUI 导入布局和客户端版本仍缺记录。
 - 原创代码许可证不授予第三方接口、文档或商标使用权。参赛与发布前仍需核对平台活动规则及麦当劳服务条款。

@@ -1,5 +1,7 @@
 # 实际测试记录（2026-10-09，Windows）
 
+本文按阶段保留历史测试结果。下方初版中的“未验证”描述对应当时开发环境；后续已在 WorkBuddy 完成真实使用联调，当前状态以文末补充和 [实测汇总](../docs/workbuddy-validation.md) 为准。项目由 GPT/Codex 辅助开发，WorkBuddy 为主要使用平台。
+
 环境：Node.js v20.9.0，npm 10.1.0，PowerShell。无第三方运行依赖、无真实网络业务调用。原始TAP在忽略的temp/tests.tap中，本报告与offline-summary.json可以随包分发。
 
 ## 自动化结果
@@ -62,3 +64,15 @@ node scripts/optimize.mjs --input tests/fixtures/request.multiplayer.mock.json -
 2026-10-09通过GitHub MCP核对官方活动材料与目标公开仓库。增加官方原文CONTEST_DECLARATION.md、MCP_INTEGRATION.md、根目录mcp-config.example.json和参赛准备说明；配置模板改为环境变量占位符。参赛声明与官方正文逐字比对一致。
 
 该版本完整npm test仍为**54项通过、0项失败**，约1217毫秒；T18实测488毫秒、10000节点。源码与参赛材料进入ZIP白名单，当前每包46文件。正式报名所需真实麦当劳MCP使用及WorkBuddy专项对话仍未取得，本报告不把GitHub MCP发布操作算成麦当劳业务联调。
+
+## WorkBuddy 使用联调补充
+
+2026-10-09，作者提供两人 70 元与百人 100 元两份真实使用导出，记录确认 Skill 加载、Node v22.22.2、本地候选搜索、真实到店菜单/套餐查询、官方计价及价格回填。两人推荐组合为 65.80 元，最低金额组合为 43.30 元；百人采购组合为 100.00 元，备选为 290.00 元，均是当时核价。
+
+两人会话逐条统计为 16 次计价调用（13 成功、3 次参数校验失败），与原最终回复“12 次全部成功”口径不同；Agent 整轮 12 次预算未落实，仍待改进。百人场景超出引擎 8 人上限，由 WorkBuddy 对话推理处理，不计为本地引擎百人测试。
+
+作者确认已经在 WorkBuddy 完整验证并成功下单。两份导出未提供建单、查询、支付回执，支付完成和异常恢复不作通过声明。真实营养、外送、有券核销及具体 ZIP 导入布局等仍未覆盖。
+
+项目由 GPT/Codex 辅助开发，WorkBuddy 记录仅为使用证据，保存在 docs/workbuddy-usage-records.md，不作为专项开发材料。本次仅更新仓库文档与 Release 描述，v1.0.0 附件保留原始内容和哈希。
+
+本次文档更新后再次执行 `npm test`：**54 tests / 54 pass / 0 fail**，约 1241 毫秒。首次受沙箱子进程 `spawn EPERM` 限制未能运行测试；获准在沙箱外重跑后通过。另通过文档链接/脱敏扫描、5 轮用户消息与 94 个工具段落完整性检查，以及 Release 描述同步的 4 种本地模拟检查；两个原 ZIP 的 SHA256 保持一致。

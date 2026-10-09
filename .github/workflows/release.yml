@@ -81,7 +81,7 @@ jobs:
               }
               core.info(`${pkg.name}：远端附件校验通过`);
             }
-            if (release.draft) {
-              release = (await github.rest.repos.updateRelease({ ...repo, release_id: release.id, draft: false })).data;
+            if (release.draft || release.body !== body) {
+              release = (await github.rest.repos.updateRelease({ ...repo, release_id: release.id, body, draft: false })).data;
             }
             await core.summary.addHeading('成品 Skill 发布完成').addLink('查看 Release', release.html_url).write();

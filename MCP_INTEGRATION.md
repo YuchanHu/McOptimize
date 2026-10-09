@@ -40,12 +40,19 @@
 |---|---|
 | 官方公开接入指南、工具名称、活动要求 | 已核对 |
 | 本地优化、模拟核价、预算/营养/份数约束及确认状态 | 已自动化测试 |
-| 真实麦当劳 MCP 连接、门店、菜单、券和营养查询 | 未验证 |
-| 真实 calculate-price、订单、支付字段与状态 | 未验证 |
-| WorkBuddy 导入、脚本执行及真实开发对话 | 未验证 |
+| WorkBuddy Skill 加载、安装目录资料读取、本地脚本 | 2026-10-09 真实记录确认，Node.js v22.22.2；具体 ZIP 导入过程与客户端版本未记录 |
+| 真实 MCP 门店、菜单与套餐详情 | 已验证；客户端工具前缀为 `mcp__mcd-mcp__` |
+| 账户券与门店券查询 | 百人会话返回无可用券；有效券使用/核销未覆盖 |
+| 真实 calculate-price 与价格回填 | 已验证两人方案 65.80 / 43.30 元；百人采购 100.00 元和备选 290.00 元亦有官方返回 |
+| 真实下单 | 作者确认已成功下单；提供的导出没有建单/查询调用或订单回执 |
+| 支付字段、支付完成、订单状态/异常恢复 | 导出未覆盖，不推断已支付 |
+| 真实营养和外送 | 未覆盖 |
+| WorkBuddy 真实使用与联调记录 | 完整脱敏合并记录见 `docs/workbuddy-usage-records.md`；项目由 GPT/Codex 辅助开发 |
 
-模拟 fixtures 的门店、商品、价格、优惠及营养全部虚构，`mock_adapter` 通过不是官方联调证据。没有伪造 `workbuddy.md`。根据 [官方活动规则](https://github.com/M-China/mcd-developer-innovation-challenge/blob/main/activityGuidelines.md)，正式参赛必须真实使用麦当劳 MCP；目前这项验收仍待补充。
+模拟 fixtures 的门店、商品、价格、优惠及营养仍全部虚构，`mock_adapter` 通过不是官方联调证据。此次真实证据来自作者提供的两份 WorkBuddy 导出，完整脱敏文本见 [使用记录](docs/workbuddy-usage-records.md)，结论与限制见 [实测汇总](docs/workbuddy-validation.md)。项目由 GPT/Codex 辅助开发，主要用于 WorkBuddy；这些是使用证据，不作为 WorkBuddy 专项开发材料。
+
+两人会话实际有 16 次 `calculate-price` 调用：13 次成功（含 1 次套餐配置校验）、3 次 Schema 参数校验失败，之后 12 条候选结果回填。本地任务预算测试通过不代表 Agent 在整轮对话中遵守了 12 次上限；该偏差保留为待改进项。百人场景由 WorkBuddy 对话推理处理，未通过当前最多 8 人的本地求解器。
 
 ## 联调记录方法
 
-使用 WorkBuddy 私有配置连接官方服务，在 [真人验收清单](demos/acceptance-checklist.md) 中逐项记录日期、客户端版本、实际工具名、脱敏 Schema 和计价结果。公开记录只保留必要的商品、场景及金额说明，不保留 Token、账号凭证、手机号、详细地址、券码和完整支付链接。真实记录取得之前维持“未验证”状态。
+使用 WorkBuddy 私有配置连接官方服务，在 [真人验收清单](demos/acceptance-checklist.md) 中逐项记录日期、客户端版本、实际工具名、脱敏 Schema 和计价结果。公开记录不保留 Token、账号凭证、手机号、详细地址、券码、追踪标识或完整支付链接；未来补充证据时继续区分工具回执与作者反馈。
