@@ -1,112 +1,110 @@
 # McOptimize · 麦麦最优解
 
-麦麦最优解是一款由 GPT/Codex 辅助开发、主要用于 WorkBuddy 的麦当劳点餐组合优化技能。输入预算、人数和每人的需求，本地算法搜索满足条件的餐品组合，给出最低金额、丰富优先和营养优先等不同选择，并将套餐子项分配给每个人。
+**把预算、口味和营养要求，变成经过官方核价的麦当劳点餐方案。**
 
-真实使用时，由 WorkBuddy 调用麦当劳官方 MCP 查询门店、菜单与优惠，再对候选组合计价。默认只推荐；创建订单前需要用户明确确认，付款由用户在官方页面完成。本项目为麦当劳程序员创意开发大赛准备，非麦当劳官方产品。
+麦麦最优解由 GPT/Codex 辅助开发，主要用于 WorkBuddy。输入预算、人数和每人的需求，技能会查询真实门店菜单，搜索可行组合，给出最低金额、丰富优先、营养优先等选择，并把套餐中的餐品分配到每个人。选择方案后，先核对完整订单摘要，经你明确确认再创建订单，付款在麦当劳官方页面完成。
 
-## 适用场景
+项目已完成 **54 项自动化测试**，并在 WorkBuddy 中贯通 **Skill 加载 → 真实菜单与营养查询 → 本地搜索 → 官方核价 → 多人分配 → 改餐再确认 → 成功建单** 的实测链路。
 
-- 单人点餐：30 元预算，鸡肉汉堡与小食必选，饮料可选。
-- 多人聚餐：三人总预算 90 元，各自有口味、必选餐品或热量要求。
-- 方案比较：在同一门店与就餐方式下比较已经核价的不同组合。
+[下载 v1.0.0 安装包](https://github.com/YuchanHu/McOptimize/releases/tag/v1.0.0) · [查看真实验证](docs/workbuddy-validation.md) · [MCP 接入说明](MCP_INTEGRATION.md)
 
-适合希望明确控制预算、照顾多人需求并了解推荐理由的用户。不会用模型记忆中的菜单或价格代替当前门店数据。
+## 能做什么
 
-项目以Node.js 20+ ESM和标准库实现，无第三方运行依赖，无独立网站/App/MCP服务端。所有fixtures和离线展示均虚构。模拟核价通过不表示取得官方价格，更不表示已下单/付款。
+- **控制整单预算**：以整数分计算金额，用当前门店官方核价筛选方案。
+- **照顾每个人**：分别设置必选餐品、口味偏好、排除条件和热量上限。
+- **拆分套餐分配**：按套餐购买，按子餐品分配，保证同一份餐品只分给一个人。
+- **比较不同目标**：最低金额、丰富优先、营养优先分别排序，避免重复组合。
+- **解释推荐理由**：展示购买清单、每人份数、热量依据、费用和核价时间。
+- **确认后下单**：改餐后重新核价并再次确认，未知建单结果先查询，避免重复提交。
 
-## 参赛材料
+适合日常点餐、小组聚餐和关注热量的用户。项目采用 Node.js 20+ ESM 和标准库，无第三方运行依赖。
 
-安装包下载：[v1.0.0 Release](https://github.com/YuchanHu/McOptimize/releases/tag/v1.0.0)。先看 [实测汇总](docs/workbuddy-validation.md)，完整脱敏记录见 [WorkBuddy 使用记录](docs/workbuddy-usage-records.md)。
+## 真实使用案例
 
-| 实测场景 | 结果与边界 |
+以下为 2026-10-09 的 WorkBuddy 实测，价格对应当时门店和餐品配置。
+
+| 场景 | 实测结果 |
 |---|---|
-| 两人预算 70 元，牛肉汉堡、有糖可乐、薯条，B 不要洋葱 | 推荐组合核价 65.80 元；最低金额组合 43.30 元；已执行本地候选搜索和价格回填，仅代表当时门店与已搜索候选 |
-| 100 人总预算 100 元，反复调整分配规则 | 官方核价确认 100.00 元采购组合及 290.00 元备选；由 WorkBuddy 对话推理完成 |
+| 三人总预算 90 元，A 不吃牛肉，B 要主食与薯条，C 不超过 600 kcal | 三种方案核价 **54.00 / 63.90 / 65.00 元**；C 分别为 **369 / 595 / 325 kcal**；最终确认后一次成功创建 **54 元**外带订单 |
+| 两人总预算 70 元，牛肉汉堡、有糖可乐、薯条及去洋葱要求 | 推荐组合核价 **65.80 元**，最低金额组合 **43.30 元**；完成套餐配置、候选搜索和价格回填 |
+| 百人总预算 100 元，持续调整分配规则 | WorkBuddy 查询并核价 **100.00 元**采购组合，结合用户反馈完善现场分配规则；属于大规模对话推理案例 |
 
-| 文件 | 内容 |
-|---|---|
-| [CONTEST_DECLARATION.md](CONTEST_DECLARATION.md) | 官方参赛声明原文，未修改 |
-| [MCP_INTEGRATION.md](MCP_INTEGRATION.md) | MCP 服务、工具、调用流程、业务价值与实际验证状态 |
-| [mcp-config.example.json](mcp-config.example.json) | 仅含环境变量占位符的公开配置示例 |
-| [参赛准备说明](demos/contest-submission.md) | 报名文本草稿与待完成步骤 |
-| [WorkBuddy 使用记录](docs/workbuddy-usage-records.md) | 两份真实使用记录的完整脱敏合并文本，保留调用、失败及多轮反馈 |
-| [实测汇总](docs/workbuddy-validation.md) | 调用证据、核价结果、作者下单反馈及尚未覆盖的项目 |
+三人实测订单回执为“待支付”，证明建单成功；实际支付由用户在官方渠道完成。三人案例的完整流程见 [脱敏记录](docs/workbuddy-three-person-records.md)，两人及百人案例见 [使用记录](docs/workbuddy-usage-records.md)。
 
-WorkBuddy 是主要使用和实测平台。聊天记录仅作为使用与联调证据，活动规则以 [官方活动仓库](https://github.com/M-China/mcd-developer-innovation-challenge) 为准。
+## 安装与连接
 
-## 本地运行（Windows）
+1. 准备可执行本地 Node.js 20+ 的 WorkBuddy 工作区，从 [Release](https://github.com/YuchanHu/McOptimize/releases/tag/v1.0.0) 下载 ZIP。
+2. 在 Skill 管理入口导入 `mcd-optimize-skill.zip`；主包包含 `mcd-optimize/` 顶层目录。接受根级入口的客户端可选择 `mcd-optimize-skill-flat.zip`。也可解压主包后添加 `mcd-optimize` 目录。
+3. 在 [麦当劳官方控制台](https://open.mcd.cn/mcp) 获取 Token，在 WorkBuddy 自定义 MCP 配置中合并以下服务：
 
-打开PowerShell，切换到项目目录，确认 `node --version` 为20+：
-
-```powershell
-# 切换到解压后的项目根目录（其中包含 SKILL.md 和 package.json）
-npm test
-node scripts/optimize.mjs --input tests/fixtures/request.mock.json --output temp/result.json
-node scripts/optimize.mjs --input tests/fixtures/request.mock.json --mock-pricing --output temp/mock-priced.json
-node scripts/optimize.mjs --input tests/fixtures/request.multiplayer.mock.json --mock-pricing --output temp/group.json
-npm run package
-npm run verify-package
+```json
+{
+  "mcpServers": {
+    "mcd-mcp": {
+      "type": "streamablehttp",
+      "url": "https://mcp.mcd.cn",
+      "headers": {
+        "Authorization": "Bearer ${MCD_MCP_TOKEN}"
+      }
+    }
+  }
+}
 ```
 
-无需npm install。`--input -` 可读取stdin；stdout为JSON，诊断在stderr。无解/计价失败是有效业务响应（退出0）；非法数据退出2，内部故障退出3。完整契约在 [references/input-output-schema.md](references/input-output-schema.md)。不要把用户输入插入shell命令，写JSON数据文件。
+公开模板见 [mcp-config.example.json](mcp-config.example.json)。Token 只绑定在私有配置中；客户端支持环境变量时使用 `MCD_MCP_TOKEN`，否则在私有配置编辑器中替换占位符。已有服务时合并 `mcd-mcp` 条目。
 
-真实流程：WorkBuddy查询菜单/详情/券/营养→显式归一化→本地候选→WorkBuddy有限调用calculate-price→脱敏价格数组回填→重新排序。`--mock-pricing`只支持mock输入，真实流程用：
+4. 启用 Skill，引用 `/mcd-optimize` 并描述预算与需求；先确认门店和就餐方式，再生成真实方案。
+
+## 直接这样使用
+
+> 三人总预算 90 元，A 不吃牛肉，B 要主食和薯条，C 要主食且不超过 600 千卡。给三种方案与份数分配。
+
+> 两个人预算 70 元，都吃牛肉汉堡和有糖可乐，至少一份薯条，B 的汉堡不要洋葱。优先划算，A 饭量更大。
+
+> 选择方案一，请展示门店、餐品份数与最终金额，我确认后再下单。
+
+技能会查询当前菜单、生成候选并进行官方核价。临时修改餐品或饮料后会重新报价，让你确认更新后的摘要。
+
+## 本地运行与复现
+
+无需 `npm install`。在包含 `SKILL.md` 和 `package.json` 的项目目录执行：
+
+```powershell
+npm test
+node scripts/optimize.mjs --input tests/fixtures/request.mock.json --mock-pricing --output temp/single.json
+node scripts/optimize.mjs --input tests/fixtures/request.multiplayer.mock.json --mock-pricing --output temp/group.json
+```
+
+这些 fixtures 是用于复现的模拟数据，输出明确标记数据来源。真实使用由 WorkBuddy 读取官方数据并回填计价结果：
 
 ```powershell
 node scripts/optimize.mjs --input temp/input.json --output temp/candidates.json
 node scripts/optimize.mjs --input temp/input.json --pricing-results temp/prices.json --output temp/result.json
 ```
 
-## WorkBuddy安装与连接麦当劳MCP
+CLI 输出机器可解析 JSON。业务上的无解或计价失败退出 0；非法输入退出 2，内部故障退出 3。完整契约见 [输入输出规范](references/input-output-schema.md)。
 
-1. 安装或更新Windows WorkBuddy，确保可执行本地Node.js脚本。将麦当劳Token保存在WorkBuddy MCP连接器配置；不要粘贴到Skill/README/测试数据。Token在 [官方控制台](https://open.mcd.cn/mcp) 获取。
-2. WorkBuddy自定义MCP使用JSON配置文件，顶层为 `mcpServers`。可复制 [配置模板](mcp-config.example.json)，通过本地私有配置绑定环境变量 `MCD_MCP_TOKEN`。已有其他服务时，只把 `mcd-mcp` 条目合并到原有 `mcpServers` 中。模板中的环境变量语法是公开占位符，本次没有验证 WorkBuddy 自动展开它；如果当前客户端不支持展开，只在 WorkBuddy 配置编辑器中将占位符替换为实际 Token，不改动项目文件。
+## 工程与质量保障
 
-   ```json
-   {
-     "mcpServers": {
-       "mcd-mcp": {
-         "type": "streamablehttp",
-         "url": "https://mcp.mcd.cn",
-         "headers": {
-           "Authorization": "Bearer ${MCD_MCP_TOKEN}"
-         }
-       }
-     }
-   }
-   ```
-
-   公开配置文件只保留环境变量占位符。包含真实 Token 的配置只保存在你的私有 WorkBuddy 配置中，不回写模板或放入 ZIP。
-
-3. 连接成功后查看实际工具列表和Schema，记录 [references/mcp-tools.md](references/mcp-tools.md) 中未核对的字段，特别是套餐选择、券、最终金额单位。
-4. 从 Release 下载 `mcd-optimize-skill.zip` 并在 WorkBuddy 的 Skill 管理/导入入口选择。主包布局是 `mcd-optimize/SKILL.md` 及同级配套资源。若当前版本只接受根级 SKILL.md，用 `mcd-optimize-skill-flat.zip`。
-5. 若客户端支持从目录添加Skill，可解压主包并选择其 `mcd-optimize` 文件夹。启用后让WorkBuddy读SKILL.md，从安装目录执行 `node scripts/optimize.mjs ...`。
-6. 先运行下面的mock三段对话，确认调用本地脚本，再进行真实只读查询和计价。真实订单不属于安装验收必做项。
-
-当前入口已在作者的 WorkBuddy 环境中成功加载，使用 name、description、description_zh、description_en、version、author 字段。
-
-## 三段示范对话
-
-- 单人：“使用麦麦最优解的模拟数据演示：30元，一个鸡肉汉堡和小食，不吃牛肉，饮料可选。只推荐。”应标记MOCK_DATA，先菜单估价，再明确模拟计价，无账户写操作。
-- 多人：“使用模拟数据：三人总预算90元，A不吃牛肉，B要主食和薯条，C要主食且不超过600千卡。给三种方案与份数分配。”应展示整单金额和每人servingId，不重复占用套餐子项。
-- 下单保护：“就选方案一，给我看看能不能下单。”mock应阻止真实建单；真实核价流程应先展示完整摘要并请求本轮明确最终确认，不把这句话当授权。可停在待确认处录制视频。真实确认后支付仍由用户在官方页面完成。
-
-详细异常与演示步骤在 [references/workflow-examples.md](references/workflow-examples.md) 和 [demos/scenarios.md](demos/scenarios.md)。
-
-## 架构与文件
-
-| 文件 | 职责 |
+| 模块 | 职责 |
 |---|---|
-| SKILL.md | 触发、工具编排、运行脚本、失败分支、确认与支付流程 |
-| scripts/constraints.mjs | 类型/金额/数量/证据校验、每人约束与份数分配 |
-| scripts/optimizer.mjs | 有界多重集枚举+beam截断、套餐覆盖、稳定指纹 |
-| scripts/ranker.mjs | 最低金额/丰富/营养三个目标与组合去重 |
-| scripts/normalize.mjs、normalize-cli.mjs | 实时Schema显式映射；禁止猜金额单位 |
-| scripts/pricing.mjs | 计价任务预算、券策略、可注入mock adapter、回填绑定 |
-| scripts/format.mjs、optimize.mjs | 机器可解析JSON与CLI |
-| scripts/workflow.mjs | 可测试的本轮摘要确认与unknown状态保护 |
-| scripts/package.mjs、zip.mjs | 无依赖ZIP、白名单、CRC32/SHA256和内容校验 |
-| tests/ | Node原生自动化测试及纯模拟fixtures |
-| references/、demos/ | 数据契约、官方工具核对、人工验收与剧本 |
+| SKILL.md | 需求理解、工具编排、推荐与订单确认流程 |
+| constraints / optimizer / ranker | 约束校验、有界搜索、套餐守恒和三目标排序 |
+| normalize / pricing | 显式字段映射、计价任务与价格回填 |
+| workflow | 确认摘要绑定、订单状态与重复提交保护 |
+| package / zip | 白名单打包、CRC32、SHA256 和凭据检查 |
+| tests / references / demos | 54 项自动化测试、数据契约与复现步骤 |
 
-WorkBuddy承担自然语言解释和真实工具路由，本地只做确定性搜索，不持有Token、不联网、不代付。workflow helper只能帮助Agent检查状态，不能替代客户端工具权限。
+质量记录见 [测试报告](demos/test-results.md) 和 [验收记录](demos/acceptance-checklist.md)。ZIP 可通过 `npm run package`、`npm run verify-package` 重新构建和校验。`v1.0.0` 附件保留发布时的稳定快照，最新实测材料在主分支在线提供。
+
+## 使用范围
+
+本地组合引擎支持 **1–8 人**；百人案例由 WorkBuddy 对话推理与官方核价完成。推荐针对当前门店、已确认的套餐组成和已搜索候选；营养上限使用匹配餐品规格的数据，未知值保留为未知。优惠默认比较无券或单券策略，食品过敏需求需向门店核实。
+
+当前真实验收覆盖到店场景。外送、有券核销、支付后订单查询等场景的覆盖范围列在 [实测汇总](docs/workbuddy-validation.md)，便于选择适合自己的使用方式。
+
+## 参赛与许可
+
+本项目参与麦当劳程序员创意开发大赛，开发工具为 GPT/Codex，主要使用平台为 WorkBuddy；聊天记录作为使用验证材料。参赛文件包括 [官方声明](CONTEST_DECLARATION.md)、[MCP 接入说明](MCP_INTEGRATION.md)、[配置模板](mcp-config.example.json) 和 [报名说明](demos/contest-submission.md)。活动规则以 [官方仓库](https://github.com/M-China/mcd-developer-innovation-challenge) 为准。
+
+原创代码使用 MIT 许可；项目为独立作品，麦当劳商品、商标、接口与第三方文档的权利归各自权利人。

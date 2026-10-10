@@ -1,7 +1,7 @@
 ---
 name: mcd-optimize
 description: 根据预算、人数、口味与营养硬约束优化麦当劳中国点餐组合，用官方 MCP 校验价格，明确确认后才创建订单。适用于省钱凑单、多人分配和低热量搭配。
-description_zh: 麦当劳预算与偏好约束智能凑单助手，默认只推荐。
+description_zh: 麦当劳预算、口味与营养组合助手，支持三目标推荐、多人份数分配、官方核价及确认后下单。
 description_en: Optimize McDonald's China orders under budget, group preferences and verified nutrition constraints using the official MCP.
 version: 1.0.0
 author: YuchanHu
@@ -10,6 +10,8 @@ author: YuchanHu
 # 麦麦最优解 / McOptimize
 
 当用户询问麦当劳预算搭配、最划算套餐、多人点餐、低热量组合或优惠比较时使用。默认意图为 `recommend_only`。这是一款本地 Skill，不是麦当劳官方作品或独立服务。
+
+由 GPT/Codex 辅助开发，主要用于 WorkBuddy。已在真实三人场景验证菜单与营养查询、本地组合搜索、官方核价、份数分配、变更后重新确认与一次成功建单。安装需要可执行 Node.js 20+ 的工作区。
 
 ## 读取资料与运行前提
 

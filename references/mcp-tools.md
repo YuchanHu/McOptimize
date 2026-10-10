@@ -1,59 +1,56 @@
-# 官方工具映射与核对记录
+# 官方工具映射与实测字段
 
-核对日期：2026-10-09。来源：[官方仓库](https://github.com/M-China/mcd-mcp-server)、[控制台](https://open.mcd.cn/mcp)、[WorkBuddy Skill 文档](https://open.workbuddy.cn/docs/skill)、[连接器教程](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Connector)。
+核对更新：2026-10-10。服务为麦当劳中国官方远程 MCP，地址 `https://mcp.mcd.cn`、Streamable HTTP、Bearer 鉴权。实测客户端前缀为 `mcp__mcd-mcp__`，适配时仍以当前客户端工具 Schema 为准。
 
-已读取官方仓库当前README：远程托管服务、Streamable HTTP、`https://mcp.mcd.cn`、Bearer鉴权、每Token每分钟600请求和401/429含义已核对。仓库是接入指南，不能当成服务端源码。以下名称已与公开列表比对。
+来源：[官方接入仓库](https://github.com/M-China/mcd-mcp-server)、[控制台](https://open.mcd.cn/mcp) 及 [真实使用记录](../docs/workbuddy-validation.md)。项目由 GPT/Codex 辅助开发，主要用于 WorkBuddy。
 
-| 官方名称 | 用途与输入来源 | 本期允许操作 |
+## 工具映射
+
+| 工具 | 用途 | 授权规则 |
 |---|---|---|
-| query-nearby-stores | 用户提供的位置→选定店铺参数 | 读 |
-| delivery-query-addresses | 已有配送地址→用户选择不敏感引用 | 读 |
-| delivery-query-stores | 选定地址→可配送店铺 | 读 |
-| query-meals | 已选门店/业务方式→可售SKU及分类 | 读 |
-| query-meal-detail | 实际SKU→组成/替换/制作要求 | 读 |
-| query-my-coupons | 账户已有券→内部券标识 | 读 |
-| query-store-coupons | 门店场景→可用券限制 | 读 |
-| list-nutrition-foods | 餐品规格匹配→可靠营养 | 读 |
-| calculate-price | 当前候选→最终应付、费用、优惠 | 读，默认总预算12次 |
-| create-order | 最后一次核价摘要→订单与官方支付信息 | 本轮明确确认后一次提交 |
-| query-order | 真实订单标识→状态/支付结果 | 读；超时优先查 |
-| available-coupons | 可领券信息 | P2，不自动执行 |
-| auto-bind-coupons | 账户领券 | 仅用户额外明确确认；非默认流程 |
+| query-nearby-stores | 选择到店门店 | 读取 |
+| delivery-query-addresses / delivery-query-stores | 外送地址与门店选择 | 读取已有信息 |
+| query-meals / query-meal-detail | 当前菜单、套餐结构、选项与特调 | 读取 |
+| query-my-coupons / query-store-coupons | 当前券与门店优惠 | 读取 |
+| list-nutrition-foods | 官方餐品营养数据 | 读取 |
+| calculate-price | 候选与改餐最终报价 | 读取；每轮任务默认预算 12 次，含重试 |
+| create-order | 当前完整摘要确认后的订单提交 | 确认后一次提交 |
+| query-order | 后续订单状态与未知结果核查 | 读取 |
+| auto-bind-coupons | 领取优惠券 | 用户额外明确确认，非默认动作 |
 
-客户端可能添加前缀或转连字符为下划线。通过实时工具列表映射，禁止照抄某客户端内部工具名。新增地址、取消订单、积分兑换、抽奖等不属于默认权限。
+积分兑换、抽奖、新增地址和取消订单不属于技能默认动作。三人会话的取消请求由助手引导至官方渠道，未调用取消接口。
 
-## 实时 Schema 核对：到店场景已实测
+## 实测字段
 
-2026-10-09 作者提供的 WorkBuddy 使用记录包含实际工具 Schema、请求和响应。已验证到店门店、菜单、套餐详情、空券列表、计价和本地回填；客户端工具前缀为 `mcp__mcd-mcp__`。完整脱敏记录与范围见 [实测汇总](../docs/workbuddy-validation.md)。项目由 GPT/Codex 辅助开发，WorkBuddy 是主要使用平台。
+| 项目 | 字段与结果 |
+|---|---|
+| 到店场景 | 成功请求使用字符串 storeCode、orderType=1、beType=1 |
+| 取餐选择 | 计价响应 takeWayList 包含 eat-in / take-in-store |
+| 商品与套餐 | items、productCode、quantity；套餐配置按 query-meal-detail 映射，特调按当前 Schema 传入 |
+| 优惠 | 查询账户与门店券，实测时为空列表 |
+| 营养 | list-nutrition-foods 返回实际营养库；三人分配中 C 为 369 / 595 / 325 kcal |
+| 计价 | data.price 为整数分；5400 对应 54.00 元、6390 对应 63.90 元 |
+| 金额组成 | productOriginalPrice、productPrice、originalPrice、discount、price；实测为无折扣到店结果 |
+| 时间 | 计价响应 datetime，用于核价时效检查 |
+| 建单 | data.orderId、payId、payH5Url、orderDetail；三人一次建单返回成功 |
+| 订单详情 | orderDetail.orderStatus=待支付、status=10、totalAmount=54、realTotalAmount=54、takeWay=外带 |
 
-记录已确认安装目录中的 Skill 加载、references 读取和本地 Node.js v22.22.2 执行。主包包含 `mcd-optimize/SKILL.md`，兼容包根级 SKILL.md；记录未注明客户端版本、导入包名或 GUI 过程，两个布局不能同时标为实测通过。
+**金额单位按接口分别处理**：calculate-price 的 data.price 为整数分；此次 create-order 的 orderDetail 金额为元的字符串，如 `"54"`。不能把两类响应直接使用同一倍率。订单 ID 和支付信息仅用于当前会话，不写入公开文件。
 
-## 当前字段核对范围
+三人全会话 10 次计价成功，7 条候选回填后三目标推荐有效；饮料修改和最终确认阶段重新核价。丰富方案的部分营养未知保留未知，不影响 C 的可信个人约束。
 
-| 项目 | 字段 | 实时核对结果 |
-|---|---|---|
-| 门店场景 | storeCode、orderType、beType | 成功请求包含字符串 storeCode、orderType=1、beType=1；其他业务组合未覆盖 |
-| 到店/外送 | takeWayList | 计价响应包含 eat-in / take-in-store；没有外送验收 |
-| 商品 | items、productCode、quantity | 已确认到店商品参数及套餐选择/特调实例；按实时 Schema 构造，不保证其他商品可直接套用 |
-| 优惠 | query-my-coupons / query-store-coupons | 百人会话返回空券列表；有效券位置、组合规则及核销未覆盖 |
-| 计价金额 | data.price | 实际整数分；6580 对应 65.80 元、10000 对应 100.00 元 |
-| 金额组成 | data.productOriginalPrice、productPrice、originalPrice、discount、price | 已观察无折扣到店响应；配送费与有券折扣未覆盖 |
-| 时间 | datetime | 成功响应带服务时间字符串；客户端按场景和有效期重新核价 |
-| 下单 | 订单ID、支付链接、查询参数 | 作者确认成功下单，但本次导出没有实际调用和回执，字段仍未核对 |
+本次实际字段来自到店查询与建单记录。外送费用、有券使用、支付后 query-order 及真实创建结果未知恢复的覆盖范围见验证汇总，不从已成功的到店请求推断其他业务枚举。
 
-WorkBuddy 自定义 MCP 通过顶层 `{"mcpServers": {}}` 配置，真实工具调用已确认连接可用。使用 [mcp-config.example.json](mcp-config.example.json) 的官方接入参数，只在私有配置绑定 Token；已有其他服务时合并条目。当前导出未证明环境变量占位符能自动展开。
+## 配置与内部适配
 
-步骤：在 WorkBuddy 自定义MCP中填写mcpServers JSON配置→保存并启用服务→查看实际工具 Schema→选择真实门店/方式→保存脱敏核对记录→确认金额单位→编写 temp/ 的显式字段mapping→只读查询菜单、详情、券、营养→本地搜索→有限核价→回填→按真人清单验收。未知关键字段则停止该分支，不伪造默认值。
+WorkBuddy 使用顶层 `mcpServers` JSON 配置，示例见 [mcp-config.example.json](mcp-config.example.json)。公开文件只有环境变量占位符，凭据绑定在私有配置中；客户端环境变量支持按其实际能力设置。
 
-本地 `pricingRequests` 是内部任务对象，含 `verificationKey`、context、items、couponIds；它不可以直接作为官方工具入参。套餐items中的 `configurationKey` 是内部组成指纹，**不是官方参数**；由Agent用保存的真实详情映射回当前选项。官方结构变化时更新显式映射和测试，不让算法直接理解任意原始响应。
+内部 pricingRequests 带 verificationKey、context、items、couponIds，用于候选绑定与回填，不能整对象直接传给官方工具。configurationKey 是本地套餐组成指纹，Agent 须将其映射回已查询的真实选项。
 
-## 异常处理
+三人实测在 Node.js v22.22.2 下完成 Skill 加载、资料读取、本地候选与回填；使用命令和数据契约见 [input-output-schema.md](input-output-schema.md)。
 
-401停止当前核价，用户在WorkBuddy配置检查Token，无需向聊天粘贴Token。429最多两次退避（100、200毫秒），重试计入12次总预算。到达预算后停止，记录未验证数量。全部失败返回verification_failed，只报告无法确认实际价格。创建订单超时不自动重试，先查订单。
+## 异常与复现
 
-## 差异登记
+401 停止当前核价，在 WorkBuddy 私有配置检查鉴权。429 按预算执行有界退避；全部失败返回 verification_failed。创建结果不明先查询，不自动重复建单。上述分支由自动化测试覆盖。
 
-- 麦当劳公开接入/工具名称：未发现与任务书冲突。
-- 实时 Schema：已保留到店调用记录；两人会话 16 次计价中 3 次因参数 Schema 不匹配失败，成功后回填 12 条候选价格。不能将文档中的默认 12 次预算当作整轮已遵守的事实。
-- WorkBuddy：Skill 加载、资料读取和 Node 执行已验证；GUI 导入布局和客户端版本仍缺记录。
-- 原创代码许可证不授予第三方接口、文档或商标使用权。参赛与发布前仍需核对平台活动规则及麦当劳服务条款。
+早期两人输入适配记录中的 3 次 Schema 校验失败及整轮调用统计保留在 [验证汇总](../docs/workbuddy-validation.md)，便于复现参数映射。真实场景的结果与模拟测试分别记录。
